@@ -9,9 +9,9 @@ public struct Game {
     
     private static func normalizedState(with board: Board, for turn: Disk) -> State {
         var turn = turn
-        if board.coordinatesToPlaceDisk(turn).isEmpty { // Pass
+        if board.validMoves(for: turn).isEmpty { // Pass
             turn.flip()
-            if board.coordinatesToPlaceDisk(turn).isEmpty { // Pass
+            if board.validMoves(for: turn).isEmpty { // Pass
                 return .over(winner: board.sideWithMoreDisks())
             } else {
                 return .beingPlayed(turn: turn)

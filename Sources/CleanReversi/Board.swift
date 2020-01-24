@@ -147,12 +147,12 @@ extension Board {
         !flippedDiskCoordinatesByPlacingDisk(disk, atX: x, y: y).isEmpty
     }
     
-    public func coordinatesToPlaceDisk(_ disk: Disk) -> [(x: Int, y: Int)] {
+    public func validMoves(for side: Disk) -> [(x: Int, y: Int)] {
         var coordinates: [(Int, Int)] = []
         
         for y in yRange {
             for x in xRange {
-                if canPlaceDisk(disk, atX: x, y: y) {
+                if canPlaceDisk(side, atX: x, y: y) {
                     coordinates.append((x, y))
                 }
             }

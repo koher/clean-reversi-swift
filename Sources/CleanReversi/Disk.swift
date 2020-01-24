@@ -3,7 +3,13 @@ public enum Disk {
     case light
 }
 
+extension Disk: Hashable {}
+
 extension Disk {
+    public static var sides: [Disk] {
+        [.dark, .light]
+    }
+    
     public var flipped: Disk {
         switch self {
         case .dark: return .light

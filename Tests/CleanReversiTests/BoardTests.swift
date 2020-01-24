@@ -348,7 +348,7 @@ final class BoardTests: XCTestCase {
         }
     }
     
-    func testCoordinatesToPlaceDisk() {
+    func testValidMoves() {
         do {
             let board: Board = Board("""
             --xxxo
@@ -357,7 +357,7 @@ final class BoardTests: XCTestCase {
             ooo---
             """)
 
-            XCTAssertEqual(board.coordinatesToPlaceDisk(.dark), [
+            XCTAssertEqual(board.validMoves(for: .dark), [
                 (x: 4, y: 1),
                 (x: 1, y: 2),
                 (x: 5, y: 2),
@@ -365,7 +365,7 @@ final class BoardTests: XCTestCase {
                 (x: 5, y: 3),
             ])
             
-            XCTAssertEqual(board.coordinatesToPlaceDisk(.light), [
+            XCTAssertEqual(board.validMoves(for: .light), [
                 (x: 1, y: 0),
                 (x: 0, y: 1),
                 (x: 1, y: 2),

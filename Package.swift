@@ -13,6 +13,9 @@ let package = Package(
         .library(
             name: "CleanReversiAI",
             targets: ["CleanReversiAI"]),
+        .library(
+            name: "CleanReversiApp",
+            targets: ["CleanReversiApp"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -27,8 +30,14 @@ let package = Package(
         .target(
             name: "CleanReversiAI",
             dependencies: ["CleanReversi"]),
+        .target(
+            name: "CleanReversiApp",
+            dependencies: ["CleanReversi", "CleanReversiAI"]),
         .testTarget(
             name: "CleanReversiTests",
             dependencies: ["CleanReversi"]),
+        .testTarget(
+            name: "CleanReversiAppTests",
+            dependencies: ["CleanReversiApp"]),
     ]
 )
