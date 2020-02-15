@@ -168,6 +168,11 @@ extension GameController {
     public func setPlayer(_ player: Player, of side: Disk) {
         _players[side] = player
         
+        // Avoids saving during initializations
+        if _players[.dark] != nil, _players[.light] != nil {
+            try? saveGame()
+        }
+        
         if let canceller = playerCancellers[side] {
             assert(game.state == .beingPlayed(turn: side))
             canceller.cancel()

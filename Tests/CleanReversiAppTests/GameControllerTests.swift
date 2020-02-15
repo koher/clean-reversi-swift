@@ -234,6 +234,7 @@ class GameControllerTests: XCTestCase {
         // Sets a player mode of the turn to `.computer` and the AI starts thinking.
         // - The activity indicator of the dark player must be made visible
         // - Properties related to `moveCompletion` must be set
+        // - Player modes in the saved state must be updated
         do {
             delegate.setPlayer(.computer, of: .dark)
             controller.setPlayer(.computer, of: .dark)
@@ -249,7 +250,12 @@ class GameControllerTests: XCTestCase {
             XCTAssertFalse(delegate.isWatingForResetGameConfirmation())
             XCTAssertFalse(delegate.isWatingForPassAlertCompletion())
 
-            XCTAssertEqual(delegate.savedState, savedState)
+            XCTAssertEqual(delegate.savedState, GameController.SavedState(
+                turn: .dark,
+                darkPlayer: .computer,
+                lightPlayer: .manual,
+                board: board
+            ))
             
             XCTAssertEqual(delegate.boardForMove, board)
             XCTAssertEqual(delegate.sideForMove, .dark)
@@ -260,6 +266,7 @@ class GameControllerTests: XCTestCase {
         // Set a player mode of the turn back to `.manual` while the AI is thinking.
         // - The activity indicator of the dark player must be made invisible
         // - Properties related to `moveCompletion` must be unset
+        // - Player modes in the saved state must be updated
         do {
             let completion = delegate.moveCompletion!
             
@@ -309,6 +316,7 @@ class GameControllerTests: XCTestCase {
         // Set a `.light` player mode to `.computer` while `turn` is `.dark`.
         // - The activity indicator of the light player must keep invisible
         // - Properties related to `moveCompletion` must keep unset
+        // - Player modes in the saved state must be updated
         do {
             delegate.setPlayer(.computer, of: .light)
             controller.setPlayer(.computer, of: .light)
@@ -324,8 +332,13 @@ class GameControllerTests: XCTestCase {
             XCTAssertFalse(delegate.isWatingForResetGameConfirmation())
             XCTAssertFalse(delegate.isWatingForPassAlertCompletion())
 
-            XCTAssertEqual(delegate.savedState, savedState)
-            
+            XCTAssertEqual(delegate.savedState, GameController.SavedState(
+                turn: .dark,
+                darkPlayer: .manual,
+                lightPlayer: .computer,
+                board: board
+            ))
+
             XCTAssertNil(delegate.boardForMove)
             XCTAssertNil(delegate.sideForMove)
 
@@ -1196,8 +1209,8 @@ class GameControllerTests: XCTestCase {
 
                     XCTAssertEqual(delegate.savedState, GameController.SavedState(
                         turn: .dark,
-                        darkPlayer: .manual,
-                        lightPlayer: .manual,
+                        darkPlayer: .computer,
+                        lightPlayer: .computer,
                         board: board0
                     ))
                     
