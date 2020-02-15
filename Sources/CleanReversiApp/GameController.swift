@@ -6,11 +6,11 @@ public final class GameController {
     private var hasBeenStarted: Bool = false
 
     // Do not use `_players` directly.
-    // Use `player(of:)`, `setPlayer(_:of:)`
-    // and `setPlayerWithNotification(_:of:)` instead.
     // `_players` always have values for both keys
     // of `.dark` and `.light` after initializations.
     // `[Disk: Player]` does not guarantee it.
+    // Use `player(of:)`, `setPlayer(_:of:)`
+    // or `setPlayerWithNotification(_:of:)` instead.
     private var _players: [Disk: Player]
     public func player(of side: Disk) -> Player {
         _players[side]!
