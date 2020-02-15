@@ -7,7 +7,6 @@ extension BoardTests {
     // to regenerate.
     static let __allTests__BoardTests = [
         ("testCanPlaceDiskAt", testCanPlaceDiskAt),
-        ("testCoordinatesToPlaceDisk", testCoordinatesToPlaceDisk),
         ("testCountOf", testCountOf),
         ("testDescription", testDescription),
         ("testFlip", testFlip),
@@ -17,6 +16,7 @@ extension BoardTests {
         ("testPlaceDiskAt", testPlaceDiskAt),
         ("testReset", testReset),
         ("testSideWithMoreDisks", testSideWithMoreDisks),
+        ("testValidMoves", testValidMoves),
         ("testXRange", testXRange),
         ("testYRange", testYRange),
     ]
