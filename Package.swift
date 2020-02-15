@@ -32,7 +32,7 @@ let package = Package(
             dependencies: ["CleanReversi"]),
         .target(
             name: "CleanReversiApp",
-            dependencies: ["CleanReversi", "CleanReversiAI"]),
+            dependencies: ["CleanReversi"]),
         .testTarget(
             name: "CleanReversiTests",
             dependencies: ["CleanReversi"]),
