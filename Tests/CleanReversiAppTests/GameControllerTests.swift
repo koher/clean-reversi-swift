@@ -1,6 +1,7 @@
 import XCTest
-import CleanReversiApp
 import CleanReversi
+import CleanReversiAsync
+import CleanReversiApp
 
 class GameControllerTests: XCTestCase {
     func testInit() {

@@ -11,6 +11,9 @@ let package = Package(
             name: "CleanReversi",
             targets: ["CleanReversi"]),
         .library(
+            name: "CleanReversiAsync",
+            targets: ["CleanReversiAsync"]),
+        .library(
             name: "CleanReversiAI",
             targets: ["CleanReversiAI"]),
         .library(
@@ -28,14 +31,20 @@ let package = Package(
             name: "CleanReversi",
             dependencies: []),
         .target(
+            name: "CleanReversiAsync",
+            dependencies: []),
+        .target(
             name: "CleanReversiAI",
-            dependencies: ["CleanReversi"]),
+            dependencies: ["CleanReversi", "CleanReversiAsync"]),
         .target(
             name: "CleanReversiApp",
-            dependencies: ["CleanReversi"]),
+            dependencies: ["CleanReversi", "CleanReversiAsync"]),
         .testTarget(
             name: "CleanReversiTests",
             dependencies: ["CleanReversi"]),
+        .testTarget(
+            name: "CleanReversiAsyncTests",
+            dependencies: ["CleanReversiAsync"]),
         .testTarget(
             name: "CleanReversiAppTests",
             dependencies: ["CleanReversiApp"]),

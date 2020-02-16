@@ -1,4 +1,5 @@
 import CleanReversi
+import CleanReversiAsync
 
 public protocol GameControllerBoardAnimationDelegate: AnyObject {
     var board: Board { get }

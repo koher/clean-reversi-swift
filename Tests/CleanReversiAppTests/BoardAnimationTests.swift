@@ -1,5 +1,6 @@
 import XCTest
 import CleanReversi
+import CleanReversiAsync
 import CleanReversiApp
 
 class BoardAnimationTests: XCTestCase {

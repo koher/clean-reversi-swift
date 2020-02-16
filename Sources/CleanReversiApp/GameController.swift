@@ -1,4 +1,5 @@
 import CleanReversi
+import CleanReversiAsync
 import Foundation
 
 public final class GameController {
