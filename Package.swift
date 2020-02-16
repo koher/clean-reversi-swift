@@ -19,6 +19,9 @@ let package = Package(
         .library(
             name: "CleanReversiApp",
             targets: ["CleanReversiApp"]),
+        .library(
+            name: "CleanReversiGateway",
+            targets: ["CleanReversiGateway"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -39,6 +42,9 @@ let package = Package(
         .target(
             name: "CleanReversiApp",
             dependencies: ["CleanReversi", "CleanReversiAsync"]),
+        .target(
+            name: "CleanReversiGateway",
+            dependencies: ["CleanReversiApp"]),
         .testTarget(
             name: "CleanReversiTests",
             dependencies: ["CleanReversi"]),
@@ -48,5 +54,8 @@ let package = Package(
         .testTarget(
             name: "CleanReversiAppTests",
             dependencies: ["CleanReversiApp"]),
+        .testTarget(
+            name: "CleanReversiGatewayTests",
+            dependencies: ["CleanReversiGateway"]),
     ]
 )
