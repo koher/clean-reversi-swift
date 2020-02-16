@@ -30,3 +30,25 @@ extension Disk {
 }
 
 extension Disk: Equatable {}
+
+extension Disk {
+    public var symbol: String {
+        switch self {
+        case .dark:
+            return "x"
+        case .light:
+            return "o"
+        }
+    }
+}
+
+extension Optional where Wrapped == Disk {
+    public var symbol: String {
+        switch self {
+        case .some(let disk):
+            return disk.symbol
+        case .none:
+            return "-"
+        }
+    }
+}

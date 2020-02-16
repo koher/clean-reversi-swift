@@ -15,7 +15,11 @@ public final class GameSaver: GameControllerSaveDelegate {
     
     public func loadGame() throws -> GameController.SavedState {
         guard let delegate = self.delegate else { throw IOError() }
-        return try GameController.SavedState(data: try delegate.readData())
+        do {
+            return try GameController.SavedState(data: try delegate.readData())
+        } catch let error {
+            throw IOError(cause: error)
+        }
     }
     
     public struct IOError: Error {

@@ -236,18 +236,3 @@ extension Board: CustomStringConvertible, CustomDebugStringConvertible {
 // MARK: Equatable
 
 extension Board: Equatable {}
-
-// MARK: File-private extension
-
-extension Optional where Wrapped == Disk {
-    fileprivate var symbol: String {
-        switch self {
-        case .some(.dark):
-            return "x"
-        case .some(.light):
-            return "o"
-        case .none:
-            return "-"
-        }
-    }
-}
