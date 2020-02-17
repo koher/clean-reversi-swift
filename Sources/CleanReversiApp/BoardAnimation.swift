@@ -2,7 +2,7 @@ import CleanReversi
 import CleanReversiAsync
 
 public protocol GameControllerBoardAnimationDelegate: AnyObject {
-    var board: Board { get }
+    var board: Board { get set }
     func updateBoard(_ board: Board, animated: Bool, completion: @escaping () -> Void) -> Canceller
     func updateDisk(_ disk: Disk?, atX x: Int, y: Int, animated: Bool, completion: @escaping () -> Void) -> Canceller
 }
@@ -10,6 +10,7 @@ public protocol GameControllerBoardAnimationDelegate: AnyObject {
 extension GameControllerBoardAnimationDelegate {
     public func updateBoard(_ board: Board, animated isAnimated: Bool, completion: @escaping () -> Void) -> Canceller {
         let diff: [(Disk?, Int, Int)] = boardDiff(from: self.board, to: board)
+        self.board = board
         let canceller = Canceller {}
         applyBoardDiff(diff[...], animated: isAnimated, canceller: canceller, completion: completion)
         return canceller
