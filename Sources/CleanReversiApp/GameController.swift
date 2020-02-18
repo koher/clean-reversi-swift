@@ -338,5 +338,5 @@ public protocol GameControllerSaveDelegate: AnyObject {
 }
 
 public protocol GameControllerStrategyDelegate: AnyObject {
-    func move(for board: Board, of side: Disk, completion: @escaping (Int, Int) -> Void) -> Canceller
+    func move(for board: Board, of side: Disk, handler: @escaping (Int, Int) -> Void) -> Canceller
 }

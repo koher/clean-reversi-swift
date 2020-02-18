@@ -166,7 +166,7 @@ class GameControllerTests: XCTestCase {
         
         // With a saved game with a turn of a computer player.
         // - The activity indicator of the light player must be visible
-        // - Properties related to `moveCompletion` must be set
+        // - Properties related to `moveHandler` must be set
         do {
             let delegate = TestDelegate()
             let board = Board("""
@@ -234,7 +234,7 @@ class GameControllerTests: XCTestCase {
         
         // Sets a player mode of the turn to `.computer` and the AI starts thinking.
         // - The activity indicator of the dark player must be made visible
-        // - Properties related to `moveCompletion` must be set
+        // - Properties related to `moveHandler` must be set
         // - Player modes in the saved state must be updated
         do {
             delegate.setPlayer(.computer, of: .dark)
@@ -266,10 +266,10 @@ class GameControllerTests: XCTestCase {
 
         // Set a player mode of the turn back to `.manual` while the AI is thinking.
         // - The activity indicator of the dark player must be made invisible
-        // - Properties related to `moveCompletion` must be unset
+        // - Properties related to `moveHandler` must be unset
         // - Player modes in the saved state must be updated
         do {
-            let completion = delegate.moveCompletion!
+            let moveHandler = delegate.moveHandler!
             
             delegate.setPlayer(.manual, of: .dark)
             controller.setPlayer(.manual, of: .dark)
@@ -292,8 +292,8 @@ class GameControllerTests: XCTestCase {
 
             XCTAssertFalse(delegate.isWaitingForMoveOfAI())
 
-            // Calling completion handlers after cancelled must be ignored.
-            completion(5, 3)
+            // Calling handlers after cancelled must be ignored.
+            moveHandler(5, 3)
             
             XCTAssertEqual(delegate.message, .turn(.dark))
             XCTAssertEqual(delegate.diskCounts, [.dark: 2, .light: 2])
@@ -316,7 +316,7 @@ class GameControllerTests: XCTestCase {
 
         // Set a `.light` player mode to `.computer` while `turn` is `.dark`.
         // - The activity indicator of the light player must keep invisible
-        // - Properties related to `moveCompletion` must keep unset
+        // - Properties related to `moveHandler` must keep unset
         // - Player modes in the saved state must be updated
         do {
             delegate.setPlayer(.computer, of: .light)
@@ -1241,7 +1241,7 @@ class GameControllerTests: XCTestCase {
             }
 
             do { // move of the dark-side player
-                try delegate.completeMoveOfAIAt(x: 4, y: 5)
+                try delegate.handleMoveOfAIAt(x: 4, y: 5)
             } catch _ {
                 XCTFail()
                 return
@@ -1344,7 +1344,7 @@ class GameControllerTests: XCTestCase {
             }
             
             do { // move of the light-side player
-                try delegate.completeMoveOfAIAt(x: 5, y: 5)
+                try delegate.handleMoveOfAIAt(x: 5, y: 5)
             } catch _ {
                 XCTFail()
                 return
@@ -1492,7 +1492,7 @@ class GameControllerTests: XCTestCase {
             }
             
             do { // move of the light-side player
-                try delegate.completeMoveOfAIAt(x: 7, y: 2)
+                try delegate.handleMoveOfAIAt(x: 7, y: 2)
             } catch _ {
                 XCTFail()
                 return
@@ -1652,7 +1652,7 @@ class GameControllerTests: XCTestCase {
             }
             
             do { // move of the light-side player
-                try delegate.completeMoveOfAIAt(x: 1, y: 0)
+                try delegate.handleMoveOfAIAt(x: 1, y: 0)
             } catch _ {
                 XCTFail()
                 return
@@ -1736,7 +1736,7 @@ class TestDelegate {
     // GameControllerStrategyDelegate
     private(set) var boardForMove: Board?
     private(set) var sideForMove: Disk?
-    private(set) var moveCompletion: ((Int, Int) -> Void)?
+    private(set) var moveHandler: ((Int, Int) -> Void)?
 }
 
 extension TestDelegate: GameControllerDelegate {
@@ -1830,27 +1830,27 @@ extension TestDelegate: GameControllerSaveDelegate {
 }
 
 extension TestDelegate: GameControllerStrategyDelegate {
-    func move(for board: Board, of side: Disk, completion: @escaping (Int, Int) -> Void) -> Canceller {
+    func move(for board: Board, of side: Disk, handler: @escaping (Int, Int) -> Void) -> Canceller {
         boardForMove = board
         sideForMove = side
-        moveCompletion = completion
+        moveHandler = handler
         return Canceller { [weak self] in
             guard let self = self else { return }
             self.boardForMove = nil
             self.sideForMove = nil
-            self.moveCompletion = nil
+            self.moveHandler = nil
         }
     }
     
-    func completeMoveOfAIAt(x: Int, y: Int) throws {
-        guard let completion = moveCompletion else { throw GeneralError() }
+    func handleMoveOfAIAt(x: Int, y: Int) throws {
+        guard let completion = moveHandler else { throw GeneralError() }
         completion(x, y)
         boardForMove = nil
         sideForMove = nil
-        moveCompletion = nil
+        moveHandler = nil
     }
     
     func isWaitingForMoveOfAI() -> Bool {
-        moveCompletion != nil
+        moveHandler != nil
     }
 }
