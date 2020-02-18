@@ -216,12 +216,22 @@ class GameControllerTests: XCTestCase {
     
     func testSetPlayer() {
         let delegate = TestDelegate()
-        let board: Board = .init(width: 8, height: 8)
+        let board0: Board = .init(width: 8, height: 8)
+        let board1: Board = Board("""
+        --------
+        --------
+        ---x----
+        ---xx---
+        ---xo---
+        --------
+        --------
+        --------
+        """)
         let savedState: GameController.SavedState = .init(
             turn: .dark,
             darkPlayer: .manual,
             lightPlayer: .manual,
-            board: board
+            board: board0
         )
         let controller = GameController(delegate: delegate)
         do {
@@ -244,7 +254,7 @@ class GameControllerTests: XCTestCase {
             XCTAssertEqual(delegate.diskCounts, [.dark: 2, .light: 2])
             XCTAssertEqual(delegate.players, [.dark: .computer, .light: .manual])
             XCTAssertEqual(delegate.playerActivityIndicatorVisibilities, [.dark: true, .light: false])
-            XCTAssertEqual(delegate.board, board)
+            XCTAssertEqual(delegate.board, board0)
             XCTAssertNil(delegate.passAlertSide)
 
             XCTAssertFalse(delegate.isWatingForBoardAnimation())
@@ -255,10 +265,10 @@ class GameControllerTests: XCTestCase {
                 turn: .dark,
                 darkPlayer: .computer,
                 lightPlayer: .manual,
-                board: board
+                board: board0
             ))
             
-            XCTAssertEqual(delegate.boardForMove, board)
+            XCTAssertEqual(delegate.boardForMove, board0)
             XCTAssertEqual(delegate.sideForMove, .dark)
 
             XCTAssertTrue(delegate.isWaitingForMoveOfAI())
@@ -278,7 +288,7 @@ class GameControllerTests: XCTestCase {
             XCTAssertEqual(delegate.diskCounts, [.dark: 2, .light: 2])
             XCTAssertEqual(delegate.players, [.dark: .manual, .light: .manual])
             XCTAssertEqual(delegate.playerActivityIndicatorVisibilities, [.dark: false, .light: false])
-            XCTAssertEqual(delegate.board, board)
+            XCTAssertEqual(delegate.board, board0)
             XCTAssertNil(delegate.passAlertSide)
 
             XCTAssertFalse(delegate.isWatingForBoardAnimation())
@@ -293,13 +303,13 @@ class GameControllerTests: XCTestCase {
             XCTAssertFalse(delegate.isWaitingForMoveOfAI())
 
             // Calling handlers after cancelled must be ignored.
-            moveHandler(5, 3)
+            moveHandler(3, 2)
             
             XCTAssertEqual(delegate.message, .turn(.dark))
             XCTAssertEqual(delegate.diskCounts, [.dark: 2, .light: 2])
             XCTAssertEqual(delegate.players, [.dark: .manual, .light: .manual])
             XCTAssertEqual(delegate.playerActivityIndicatorVisibilities, [.dark: false, .light: false])
-            XCTAssertEqual(delegate.board, board)
+            XCTAssertEqual(delegate.board, board0)
             XCTAssertNil(delegate.passAlertSide)
 
             XCTAssertFalse(delegate.isWatingForBoardAnimation())
@@ -326,7 +336,7 @@ class GameControllerTests: XCTestCase {
             XCTAssertEqual(delegate.diskCounts, [.dark: 2, .light: 2])
             XCTAssertEqual(delegate.players, [.dark: .manual, .light: .computer])
             XCTAssertEqual(delegate.playerActivityIndicatorVisibilities, [.dark: false, .light: false])
-            XCTAssertEqual(delegate.board, board)
+            XCTAssertEqual(delegate.board, board0)
             XCTAssertNil(delegate.passAlertSide)
 
             XCTAssertFalse(delegate.isWatingForBoardAnimation())
@@ -337,7 +347,49 @@ class GameControllerTests: XCTestCase {
                 turn: .dark,
                 darkPlayer: .manual,
                 lightPlayer: .computer,
-                board: board
+                board: board0
+            ))
+
+            XCTAssertNil(delegate.boardForMove)
+            XCTAssertNil(delegate.sideForMove)
+
+            XCTAssertFalse(delegate.isWaitingForMoveOfAI())
+        }
+        
+        // Set a `.dark` player mode to `.computer` while board animations.
+        // - The activity indicator of the dark player must keep invisible
+        // - Properties related to `moveHandler` must keep unset
+        // - Player modes in the saved state must be updated
+        do {
+            delegate.setPlayer(.manual, of: .dark)
+            controller.setPlayer(.manual, of: .dark)
+            
+            do {
+                try controller.placeDiskAt(x: 3, y: 2)
+            } catch _ {
+                XCTFail()
+                return
+            }
+            
+            delegate.setPlayer(.computer, of: .dark)
+            controller.setPlayer(.computer, of: .dark)
+            
+            XCTAssertEqual(delegate.message, .turn(.dark))
+            XCTAssertEqual(delegate.diskCounts, [.dark: 2, .light: 2]) // Updated after animations
+            XCTAssertEqual(delegate.players, [.dark: .computer, .light: .computer])
+            XCTAssertEqual(delegate.playerActivityIndicatorVisibilities, [.dark: false, .light: false])
+            XCTAssertEqual(delegate.board, board1)
+            XCTAssertNil(delegate.passAlertSide)
+
+            XCTAssertTrue(delegate.isWatingForBoardAnimation())
+            XCTAssertFalse(delegate.isWatingForResetGameConfirmation())
+            XCTAssertFalse(delegate.isWatingForPassAlertCompletion())
+
+            XCTAssertEqual(delegate.savedState, GameController.SavedState(
+                turn: .light,
+                darkPlayer: .computer,
+                lightPlayer: .computer,
+                board: board1
             ))
 
             XCTAssertNil(delegate.boardForMove)

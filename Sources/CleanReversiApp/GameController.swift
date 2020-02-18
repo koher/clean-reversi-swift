@@ -84,10 +84,9 @@ public final class GameController {
         guard case .beingPlayed(let turn) = game.state else { return }
         switch player(of: turn) {
         case .manual:
-            let cleanUp: () -> Void = { [weak self] in
+            playerCancellers[turn] = Canceller { [weak self] in
                 self?.playerCancellers[turn] = nil
             }
-            playerCancellers[turn] = Canceller(cleanUp)
         case .computer:
             guard let delegate = self.delegate else { return }
             guard let strategyDelegate = self.strategyDelegate else { return }
@@ -102,15 +101,17 @@ public final class GameController {
             canceller.addSubcanceller(strategyDelegate.move(for: game.board, of: turn) { [weak self] x, y in
                 guard let self = self else { return }
                 if canceller.isCancelled { return }
+                try! self.game.placeDiskAt(x: x, y: y)
                 cleanUp()
-                try! self.handleMove(of: turn, atX: x, y: y)
+                self.handleMove(of: turn)
             })
             playerCancellers[turn] = canceller
         }
     }
 
-    private func handleMove(of side: Disk, atX x: Int, y: Int) throws {
-        try game.placeDiskAt(x: x, y: y)
+    private func handleMove(of side: Disk) {
+        assert(playerCancellers[side] == nil)
+        
         try? saveGame()
 
         guard let delegate = self.delegate else { return }
@@ -193,7 +194,9 @@ extension GameController {
         guard isWaitingForPlayer else { throw MoveError.duringAnimations }
         guard case .manual = player(of: turn) else { throw MoveError.playerInTurnIsNotManual }
         do {
-            try handleMove(of: turn, atX: x, y: y)
+            try game.placeDiskAt(x: x, y: y)
+            playerCancellers[turn] = nil
+            handleMove(of: turn)
         } catch let error as Game.DiskPlacementError {
             throw MoveError.invalidMove(error)
         } catch _ {
