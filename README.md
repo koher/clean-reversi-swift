@@ -4,7 +4,7 @@ This is a reversi library and an app implemented in Swift applying [the Clean Ar
 
 This repository does not include the layer of *Frameworks and Drivers*. Check [koher/clean-reversi-ios](https://github.com/koher/clean-reversi-ios) (iOS) and [koher/clean-reversi-macos](https://github.com/koher/clean-reversi-macos) (macOS) for the implementations of the layer.
 
-Also, *CleanReversi* simplifies some parts of the Clean Architecture. For example, some parts of *Presenters* and *Controllers* are implemented in the `CleanReversiApp` which is mainly implement *Use Case* because the cost to implement them in different modules is too much compared to the benefit.
+Also, *CleanReversi* simplifies some parts of the Clean Architecture. For example, some parts of *Presenters* and *Controllers* are implemented in the `CleanReversiApp` which mainly implements *Use Cases* because the cost to implement them in different modules is too much compared to the benefit.
 
 Relations between the modules in this package and the layers in the Clean Architecture are shown below.
 
